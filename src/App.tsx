@@ -1,20 +1,36 @@
-// src/App.tsx
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { MainLayout } from '@/components/layout/MainLayout'
+import { Toolbar } from '@/components/layout/Toolbar'
+import { Sidebar } from '@/components/layout/Sidebar'
 
 function App() {
+  // Handlers temporales
+  const handleFileUpload = () => console.log('Upload file')
+  const handleResetView = () => console.log('Reset view')
+  const handleZoomIn = () => console.log('Zoom in')
+  const handleZoomOut = () => console.log('Zoom out')
+  const handleToggleFullscreen = () => console.log('Toggle fullscreen')
+  const handleToggleGrid = () => console.log('Toggle grid')
+  const handleToggleWireframe = () => console.log('Toggle wireframe')
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-4">
-        <h1 className="text-4xl font-bold mb-4">3D Model Viewer</h1>
-        <Card className="p-6">
-          <p className="text-muted-foreground mb-4">
-            Setup completado. ¡Listo para comenzar con el visualizador 3D!
-          </p>
-          <Button>Test Button</Button>
-        </Card>
+    <MainLayout
+      toolbar={
+        <Toolbar
+          onFileUpload={handleFileUpload}
+          onResetView={handleResetView}
+          onZoomIn={handleZoomIn}
+          onZoomOut={handleZoomOut}
+          onToggleFullscreen={handleToggleFullscreen}
+          onToggleGrid={handleToggleGrid}
+          onToggleWireframe={handleToggleWireframe}
+        />
+      }
+      sidebar={<Sidebar />}
+    >
+      <div className="flex h-full items-center justify-center bg-zinc-900">
+        <p className="text-zinc-500">3D Viewer will be here</p>
       </div>
-    </div>
+    </MainLayout>
   )
 }
 
