@@ -46,6 +46,9 @@ export const useViewerStore = create<ViewerStore>((set) => ({
     autoRotateSpeed: 1,
     showGrid: true,
     backgroundColor: '#1a1a1a',
+    renderMode: 'solid' as RenderMode,
+    showAxes: false,
+    showBoundingBox: false,
   },
   lightSettings: {
     ambient: {

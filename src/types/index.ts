@@ -1,4 +1,7 @@
 // src/types/index.ts
+//
+export type RenderMode = 'solid' | 'wireframe' | 'normal' | 'matcap' | 'depth'
+
 export interface Model3D {
   id: string
   name: string
@@ -11,6 +14,9 @@ export interface ViewerSettings {
   autoRotate: boolean
   showGrid: boolean
   backgroundColor: string
+  renderMode: RenderMode
+  showAxes: boolean
+  showBoundingBox: boolean
 }
 
 export interface CameraSettings {
