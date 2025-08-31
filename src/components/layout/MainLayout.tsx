@@ -9,21 +9,21 @@ interface MainLayoutProps {
 
 export function MainLayout({ children, sidebar, toolbar }: MainLayoutProps) {
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      {/* Sidebar */}
-      <aside className="w-80 border-r bg-card">
+    <div className="flex h-screen w-screen overflow-hidden bg-background">
+      {/* Sidebar - Fixed width */}
+      <aside className="w-80 flex-shrink-0 border-r bg-card/50 backdrop-blur">
         {sidebar}
       </aside>
 
-      {/* Main Content */}
-      <div className="flex flex-1 flex-col">
-        {/* Toolbar */}
-        <header className="border-b bg-card">
+      {/* Main Content Area */}
+      <div className="flex flex-1 flex-col min-w-0">
+        {/* Toolbar - Fixed height */}
+        <header className="h-14 flex-shrink-0 border-b bg-card/50 backdrop-blur">
           {toolbar}
         </header>
 
-        {/* 3D Viewer Area */}
-        <main className="flex-1 overflow-hidden">
+        {/* 3D Viewer Area - Takes remaining space */}
+        <main className="flex-1 relative overflow-hidden bg-zinc-950">
           {children}
         </main>
       </div>

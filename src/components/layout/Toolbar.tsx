@@ -33,40 +33,49 @@ export function Toolbar({
   onToggleWireframe
 }: ToolbarProps) {
   return (
-    <div className="flex h-14 items-center px-4 gap-2">
-      <TooltipProvider>
+    <div className="flex h-full items-center px-4 gap-1">
+      <TooltipProvider delayDuration={300}>
+        {/* Logo/Title */}
+        <div className="flex items-center gap-2 mr-4">
+          <Box className="h-5 w-5 text-primary" />
+          <span className="font-semibold text-sm">3D Viewer</span>
+        </div>
+
+        <Separator orientation="vertical" className="mx-2 h-6" />
+
         {/* File Operations */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="icon" onClick={onFileUpload}>
+              <Button variant="ghost" size="sm" onClick={onFileUpload}>
                 <Upload className="h-4 w-4" />
+                <span className="ml-2">Upload</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Upload Model</p>
+              <p>Upload 3D Model (OBJ)</p>
             </TooltipContent>
           </Tooltip>
         </div>
 
-        <Separator orientation="vertical" className="h-8" />
+        <Separator orientation="vertical" className="mx-2 h-6" />
 
         {/* View Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="icon" onClick={onResetView}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onResetView}>
                 <Camera className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Reset View</p>
+              <p>Reset Camera View</p>
             </TooltipContent>
           </Tooltip>
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="icon" onClick={onZoomIn}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onZoomIn}>
                 <ZoomIn className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -77,7 +86,7 @@ export function Toolbar({
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="icon" onClick={onZoomOut}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onZoomOut}>
                 <ZoomOut className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -87,13 +96,18 @@ export function Toolbar({
           </Tooltip>
         </div>
 
-        <Separator orientation="vertical" className="h-8" />
+        <Separator orientation="vertical" className="mx-2 h-6" />
 
         {/* Display Options */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="icon" onClick={onToggleGrid}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={onToggleGrid}
+              >
                 <Grid3x3 className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -104,7 +118,12 @@ export function Toolbar({
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="icon" onClick={onToggleWireframe}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={onToggleWireframe}
+              >
                 <Box className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -114,16 +133,24 @@ export function Toolbar({
           </Tooltip>
         </div>
 
+        {/* Spacer */}
+        <div className="flex-1" />
+
         {/* Right side actions */}
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="icon" onClick={onToggleFullscreen}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={onToggleFullscreen}
+              >
                 <Maximize2 className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Fullscreen</p>
+              <p>Toggle Fullscreen</p>
             </TooltipContent>
           </Tooltip>
         </div>
