@@ -29,12 +29,21 @@ interface ViewerStore {
   setModelInfo: (info: { vertices: number; faces: number } | null) => void
 }
 
+export interface ViewerSettings {
+  wireframe: boolean
+  autoRotate: boolean
+  autoRotateSpeed: number // Agregar esta línea
+  showGrid: boolean
+  backgroundColor: string
+}
+
 export const useViewerStore = create<ViewerStore>((set) => ({
   // Estado inicial
   currentModel: null,
   settings: {
     wireframe: false,
     autoRotate: false,
+    autoRotateSpeed: 1,
     showGrid: true,
     backgroundColor: '#1a1a1a',
   },
@@ -70,3 +79,4 @@ export const useViewerStore = create<ViewerStore>((set) => ({
   setError: (error) => set({ error }),
   setModelInfo: (info) => set({ modelInfo: info }),
 }))
+

@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator'
 import { useViewerStore } from '@/store/viewerStore'
 
 export function Sidebar() {
-  const { settings, updateSettings, currentModel } = useViewerStore()
+  const { settings, updateSettings, currentModel, lightSettings, updateLightSettings, modelInfo } = useViewerStore()
 
   return (
     <div className="flex h-full flex-col">
@@ -65,6 +65,29 @@ export function Sidebar() {
                         updateSettings({ autoRotate: pressed })
                       }
                     />
+                    {settings.autoRotate && (
+                      <>
+                        <Separator />
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-sm font-normal">Rotation Speed</Label>
+                            <span className="text-xs text-muted-foreground">
+                              {settings.autoRotateSpeed.toFixed(1)}x
+                            </span>
+                          </div>
+                          <Slider
+                            value={[settings.autoRotateSpeed]}
+                            onValueChange={([value]) =>
+                              updateSettings({ autoRotateSpeed: value })
+                            }
+                            min={0.5}
+                            max={5}
+                            step={0.5}
+                            className="w-full"
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   <Separator />
@@ -101,8 +124,8 @@ export function Sidebar() {
                       <button
                         key={color}
                         className={`h-10 w-full rounded border-2 transition-all hover:scale-105 ${settings.backgroundColor === color
-                            ? 'border-primary shadow-md'
-                            : 'border-border'
+                          ? 'border-primary shadow-md'
+                          : 'border-border'
                           }`}
                         style={{ backgroundColor: color }}
                         onClick={() => updateSettings({ backgroundColor: color })}
@@ -127,12 +150,19 @@ export function Sidebar() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="text-sm font-normal">Intensity</Label>
-                      <span className="text-xs text-muted-foreground">50%</span>
+                      <span className="text-xs text-muted-foreground">
+                        {Math.round(lightSettings.ambient.intensity * 100)}%
+                      </span>
                     </div>
                     <Slider
-                      defaultValue={[0.5]}
+                      value={[lightSettings.ambient.intensity]}
+                      onValueChange={([value]) =>
+                        updateLightSettings({
+                          ambient: { ...lightSettings.ambient, intensity: value }
+                        })
+                      }
                       max={1}
-                      step={0.1}
+                      step={0.05}
                       className="w-full"
                     />
                   </div>
@@ -150,10 +180,17 @@ export function Sidebar() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="text-sm font-normal">Intensity</Label>
-                      <span className="text-xs text-muted-foreground">100%</span>
+                      <span className="text-xs text-muted-foreground">
+                        {Math.round(lightSettings.directional.intensity * 100)}%
+                      </span>
                     </div>
                     <Slider
-                      defaultValue={[1]}
+                      value={[lightSettings.directional.intensity]}
+                      onValueChange={([value]) =>
+                        updateLightSettings({
+                          directional: { ...lightSettings.directional, intensity: value }
+                        })
+                      }
                       max={2}
                       step={0.1}
                       className="w-full"
@@ -162,25 +199,71 @@ export function Sidebar() {
 
                   <Separator />
 
-                  <div className="space-y-3">
-                    <Label className="text-sm font-normal">Position</Label>
-                    <div className="space-y-2">
+                  <div className="space-y-4">
+                    <Label className="text-sm font-normal">Light Position</Label>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">X</span>
+                        <span className="text-xs text-muted-foreground">
+                          {lightSettings.directional.position[0].toFixed(1)}
+                        </span>
+                      </div>
                       <Slider
-                        defaultValue={[5]}
+                        value={[lightSettings.directional.position[0]]}
+                        onValueChange={([value]) => {
+                          const newPos = [...lightSettings.directional.position] as [number, number, number]
+                          newPos[0] = value
+                          updateLightSettings({
+                            directional: { ...lightSettings.directional, position: newPos }
+                          })
+                        }}
                         min={-10}
                         max={10}
                         step={0.5}
                         className="w-full"
                       />
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Y</span>
+                        <span className="text-xs text-muted-foreground">
+                          {lightSettings.directional.position[1].toFixed(1)}
+                        </span>
+                      </div>
                       <Slider
-                        defaultValue={[5]}
-                        min={-10}
+                        value={[lightSettings.directional.position[1]]}
+                        onValueChange={([value]) => {
+                          const newPos = [...lightSettings.directional.position] as [number, number, number]
+                          newPos[1] = value
+                          updateLightSettings({
+                            directional: { ...lightSettings.directional, position: newPos }
+                          })
+                        }}
+                        min={0}
                         max={10}
                         step={0.5}
                         className="w-full"
                       />
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Z</span>
+                        <span className="text-xs text-muted-foreground">
+                          {lightSettings.directional.position[2].toFixed(1)}
+                        </span>
+                      </div>
                       <Slider
-                        defaultValue={[5]}
+                        value={[lightSettings.directional.position[2]]}
+                        onValueChange={([value]) => {
+                          const newPos = [...lightSettings.directional.position] as [number, number, number]
+                          newPos[2] = value
+                          updateLightSettings({
+                            directional: { ...lightSettings.directional, position: newPos }
+                          })
+                        }}
                         min={-10}
                         max={10}
                         step={0.5}
@@ -206,7 +289,9 @@ export function Sidebar() {
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground">Name:</span>
-                        <span className="text-sm font-medium">{currentModel.name}</span>
+                        <span className="text-sm font-medium truncate ml-2" title={currentModel.name}>
+                          {currentModel.name}
+                        </span>
                       </div>
                       <Separator />
                       <div className="flex justify-between items-center">
@@ -215,14 +300,29 @@ export function Sidebar() {
                       </div>
                       <Separator />
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Vertices:</span>
-                        <span className="text-sm font-medium">-</span>
+                        <span className="text-sm text-muted-foreground">File Size:</span>
+                        <span className="text-sm font-medium">
+                          {(currentModel.file.size / 1024 / 1024).toFixed(2)} MB
+                        </span>
                       </div>
-                      <Separator />
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">Faces:</span>
-                        <span className="text-sm font-medium">-</span>
-                      </div>
+                      {modelInfo && (
+                        <>
+                          <Separator />
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">Vertices:</span>
+                            <span className="text-sm font-medium">
+                              {modelInfo.vertices.toLocaleString()}
+                            </span>
+                          </div>
+                          <Separator />
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">Faces:</span>
+                            <span className="text-sm font-medium">
+                              {modelInfo.faces.toLocaleString()}
+                            </span>
+                          </div>
+                        </>
+                      )}
                     </div>
                   ) : (
                     <div className="text-center py-8">
@@ -239,20 +339,20 @@ export function Sidebar() {
 
               <Card>
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-base">Application Info</CardTitle>
+                  <CardTitle className="text-base">Controls</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm">
+                <CardContent className="space-y-2 text-xs text-muted-foreground">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Version:</span>
-                    <span>1.0.0</span>
+                    <span>Rotate:</span>
+                    <span>Left Mouse</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Renderer:</span>
-                    <span>Three.js</span>
+                    <span>Zoom:</span>
+                    <span>Mouse Wheel</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Framework:</span>
-                    <span>React Three Fiber</span>
+                    <span>Pan:</span>
+                    <span>Right Mouse</span>
                   </div>
                 </CardContent>
               </Card>
