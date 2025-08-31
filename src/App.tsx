@@ -1,29 +1,50 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { Toolbar } from '@/components/layout/Toolbar'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { FileUploadDialog } from '@/components/FileUploadDialog'
+import { ViewerContainer } from '@/components/viewer/ViewerContainer'
 import { useViewerStore } from '@/store/viewerStore'
 
 function App() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
-  const { currentModel } = useViewerStore()
+  const { updateSettings, settings } = useViewerStore()
 
-  // Handlers
-  const handleFileUpload = () => setUploadDialogOpen(true)
-  const handleResetView = () => console.log('Reset view')
-  const handleZoomIn = () => console.log('Zoom in')
-  const handleZoomOut = () => console.log('Zoom out')
-  const handleToggleFullscreen = () => console.log('Toggle fullscreen')
-  const handleToggleGrid = () => console.log('Toggle grid')
-  const handleToggleWireframe = () => console.log('Toggle wireframe')
+  // Camera control functions
+  const handleResetView = () => {
+    window.dispatchEvent(new Event('reset-camera'))
+  }
+
+  const handleZoomIn = () => {
+    window.dispatchEvent(new Event('zoom-in'))
+  }
+
+  const handleZoomOut = () => {
+    window.dispatchEvent(new Event('zoom-out'))
+  }
+
+  const handleToggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+  }
+
+  const handleToggleGrid = () => {
+    updateSettings({ showGrid: !settings.showGrid })
+  }
+
+  const handleToggleWireframe = () => {
+    updateSettings({ wireframe: !settings.wireframe })
+  }
 
   return (
     <>
       <MainLayout
         toolbar={
           <Toolbar
-            onFileUpload={handleFileUpload}
+            onFileUpload={() => setUploadDialogOpen(true)}
             onResetView={handleResetView}
             onZoomIn={handleZoomIn}
             onZoomOut={handleZoomOut}
@@ -34,27 +55,7 @@ function App() {
         }
         sidebar={<Sidebar />}
       >
-        <div className="flex h-full items-center justify-center bg-zinc-900">
-          {currentModel ? (
-            <div className="text-center">
-              <p className="text-zinc-400 mb-2">Model loaded:</p>
-              <p className="text-white font-medium">{currentModel.name}</p>
-              <p className="text-zinc-500 text-sm mt-4">
-                3D Viewer coming next...
-              </p>
-            </div>
-          ) : (
-            <div className="text-center">
-              <p className="text-zinc-500 mb-4">No model loaded</p>
-              <button
-                onClick={handleFileUpload}
-                className="text-primary hover:underline text-sm"
-              >
-                Upload a 3D model to get started
-              </button>
-            </div>
-          )}
-        </div>
+        <ViewerContainer />
       </MainLayout>
 
       <FileUploadDialog
