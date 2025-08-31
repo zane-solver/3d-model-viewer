@@ -1,11 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useMemo } from 'react'
 import { useLoader } from '@react-three/fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import * as THREE from 'three'
 import { useViewerStore } from '@/store/viewerStore'
-import { useTexture } from '@react-three/drei'
-import { Box3Helper } from 'three'
-import { useHelper } from '@react-three/drei'
 
 interface ModelLoaderProps {
   url: string
@@ -17,14 +14,16 @@ export function ModelLoader({ url, wireframe = false }: ModelLoaderProps) {
   const { setError, setModelInfo, settings } = useViewerStore()
   const meshRef = useRef<THREE.Group>(null)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [boundingBox, setBoundingBox] = useState<THREE.Box3 | null>(null)
 
-  // Load matcap texture
+  // Crear textura matcap procedural
   const matcapTexture = useMemo(() => {
     const canvas = document.createElement('canvas')
     canvas.width = 256
     canvas.height = 256
     const context = canvas.getContext('2d')!
 
+    // Crear gradiente radial para efecto matcap
     const gradient = context.createRadialGradient(128, 128, 0, 128, 128, 128)
     gradient.addColorStop(0, '#ffffff')
     gradient.addColorStop(0.5, '#8888ff')
@@ -35,6 +34,7 @@ export function ModelLoader({ url, wireframe = false }: ModelLoaderProps) {
 
     const texture = new THREE.CanvasTexture(canvas)
     texture.encoding = THREE.sRGBEncoding
+    texture.needsUpdate = true
     return texture
   }, [])
 
@@ -83,6 +83,9 @@ export function ModelLoader({ url, wireframe = false }: ModelLoaderProps) {
       const box = new THREE.Box3().setFromObject(obj)
       const center = box.getCenter(new THREE.Vector3())
       const size = box.getSize(new THREE.Vector3())
+
+      // Guardar el bounding box
+      setBoundingBox(box)
 
       obj.position.set(-center.x, -center.y, -center.z)
 
@@ -163,9 +166,53 @@ export function ModelLoader({ url, wireframe = false }: ModelLoaderProps) {
     }
   }, [obj, settings.renderMode, settings.wireframe, isInitialized, matcapTexture])
 
-  const boxHelperRef = useRef<THREE.Box3Helper>(null)
+  return (
+    <>
+      <primitive ref={meshRef} object={obj} />
+      {/* Bounding Box con líneas simples */}
+      {settings.showBoundingBox && boundingBox && (
+        <BoundingBoxHelper box={boundingBox} />
+      )}
+    </>
+  )
+}
 
-  useHelper(settings.showBoundingBox ? meshRef : null, Box3Helper, 'yellow')
+// Componente helper para el bounding box
+function BoundingBoxHelper({ box }: { box: THREE.Box3 }) {
+  const vertices = useMemo(() => {
+    const min = box.min
+    const max = box.max
 
-  return <primitive ref={meshRef} object={obj} />
+    return [
+      // Bottom face
+      [min.x, min.y, min.z], [max.x, min.y, min.z],
+      [max.x, min.y, min.z], [max.x, min.y, max.z],
+      [max.x, min.y, max.z], [min.x, min.y, max.z],
+      [min.x, min.y, max.z], [min.x, min.y, min.z],
+      // Top face
+      [min.x, max.y, min.z], [max.x, max.y, min.z],
+      [max.x, max.y, min.z], [max.x, max.y, max.z],
+      [max.x, max.y, max.z], [min.x, max.y, max.z],
+      [min.x, max.y, max.z], [min.x, max.y, min.z],
+      // Vertical edges
+      [min.x, min.y, min.z], [min.x, max.y, min.z],
+      [max.x, min.y, min.z], [max.x, max.y, min.z],
+      [max.x, min.y, max.z], [max.x, max.y, max.z],
+      [min.x, min.y, max.z], [min.x, max.y, max.z],
+    ].flat()
+  }, [box])
+
+  return (
+    <lineSegments>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={vertices.length / 3}
+          array={new Float32Array(vertices)}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <lineBasicMaterial color="yellow" />
+    </lineSegments>
+  )
 }
