@@ -5,6 +5,8 @@ import { Slider } from '@/components/ui/slider'
 import { Toggle } from '@/components/ui/toggle'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { RenderMode } from '@/types'
+import { cn } from '@/lib/utils'
 import { useViewerStore } from '@/store/viewerStore'
 
 export function Sidebar() {
@@ -29,24 +31,54 @@ export function Sidebar() {
 
             {/* Display Tab */}
             <TabsContent value="display" className="space-y-6 mt-0">
+
               <Card>
                 <CardHeader className="pb-4">
                   <CardTitle className="text-base">Render Mode</CardTitle>
                   <CardDescription className="text-xs">
-                    Change how the model is displayed
+                    Choose visualization style
                   </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { value: 'solid', label: 'Solid' },
+                      { value: 'wireframe', label: 'Wireframe' },
+                      { value: 'normal', label: 'Normals' },
+                      { value: 'matcap', label: 'MatCap' },
+                    ].map((mode) => (
+                      <button
+                        key={mode.value}
+                        onClick={() => updateSettings({ renderMode: mode.value as RenderMode })}
+                        className={cn(
+                          "px-3 py-2 text-sm rounded-md transition-all",
+                          settings.renderMode === mode.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted hover:bg-muted/80"
+                        )}
+                      >
+                        {mode.label}
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-base">Visual Helpers</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="wireframe" className="text-sm font-normal">
-                      Wireframe
+                    <Label htmlFor="axes" className="text-sm font-normal">
+                      Show Axes
                     </Label>
                     <Toggle
-                      id="wireframe"
+                      id="axes"
                       size="sm"
-                      pressed={settings.wireframe}
+                      pressed={settings.showAxes}
                       onPressedChange={(pressed) =>
-                        updateSettings({ wireframe: pressed })
+                        updateSettings({ showAxes: pressed })
                       }
                     />
                   </div>
@@ -54,59 +86,21 @@ export function Sidebar() {
                   <Separator />
 
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="autorotate" className="text-sm font-normal">
-                      Auto Rotate
+                    <Label htmlFor="boundingbox" className="text-sm font-normal">
+                      Show Bounding Box
                     </Label>
                     <Toggle
-                      id="autorotate"
+                      id="boundingbox"
                       size="sm"
-                      pressed={settings.autoRotate}
+                      pressed={settings.showBoundingBox}
                       onPressedChange={(pressed) =>
-                        updateSettings({ autoRotate: pressed })
-                      }
-                    />
-                    {settings.autoRotate && (
-                      <>
-                        <Separator />
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-sm font-normal">Rotation Speed</Label>
-                            <span className="text-xs text-muted-foreground">
-                              {settings.autoRotateSpeed.toFixed(1)}x
-                            </span>
-                          </div>
-                          <Slider
-                            value={[settings.autoRotateSpeed]}
-                            onValueChange={([value]) =>
-                              updateSettings({ autoRotateSpeed: value })
-                            }
-                            min={0.5}
-                            max={5}
-                            step={0.5}
-                            className="w-full"
-                          />
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="grid" className="text-sm font-normal">
-                      Show Grid
-                    </Label>
-                    <Toggle
-                      id="grid"
-                      size="sm"
-                      pressed={settings.showGrid}
-                      onPressedChange={(pressed) =>
-                        updateSettings({ showGrid: pressed })
+                        updateSettings({ showBoundingBox: pressed })
                       }
                     />
                   </div>
                 </CardContent>
               </Card>
+
 
               <Card>
                 <CardHeader className="pb-4">
