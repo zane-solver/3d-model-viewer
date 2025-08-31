@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { DirectionalLight } from 'three'
 import { useHelper } from '@react-three/drei'
+import { useViewerStore } from '@/store/viewerStore'
 
 interface SceneLightsProps {
   showHelpers?: boolean
@@ -8,6 +9,7 @@ interface SceneLightsProps {
 
 export function SceneLights({ showHelpers = false }: SceneLightsProps) {
   const directionalLightRef = useRef<DirectionalLight>(null)
+  const { lightSettings } = useViewerStore()
 
   // Show light helper in development
   if (showHelpers && directionalLightRef.current) {
@@ -17,13 +19,17 @@ export function SceneLights({ showHelpers = false }: SceneLightsProps) {
   return (
     <>
       {/* Ambient light for overall illumination */}
-      <ambientLight intensity={0.5} />
+      <ambientLight
+        intensity={lightSettings.ambient.intensity}
+        color={lightSettings.ambient.color}
+      />
 
       {/* Main directional light */}
       <directionalLight
         ref={directionalLightRef}
-        position={[5, 5, 5]}
-        intensity={1}
+        position={lightSettings.directional.position}
+        intensity={lightSettings.directional.intensity}
+        color={lightSettings.directional.color}
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-camera-far={50}
@@ -36,13 +42,8 @@ export function SceneLights({ showHelpers = false }: SceneLightsProps) {
       {/* Fill light from opposite direction */}
       <directionalLight
         position={[-5, 3, -5]}
-        intensity={0.3}
-      />
-
-      {/* Top light for better definition */}
-      <directionalLight
-        position={[0, 10, 0]}
-        intensity={0.2}
+        intensity={lightSettings.directional.intensity * 0.3}
+        color={lightSettings.directional.color}
       />
     </>
   )
