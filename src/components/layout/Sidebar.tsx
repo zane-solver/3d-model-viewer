@@ -485,25 +485,7 @@ export function Sidebar({
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-base">Controls</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-xs text-muted-foreground">
-                  <div className="flex justify-between">
-                    <span>Rotate:</span>
-                    <span>Left Mouse</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Zoom:</span>
-                    <span>Mouse Wheel</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Pan:</span>
-                    <span>Right Mouse</span>
-                  </div>
-                </CardContent>
-              </Card>
+              
             </TabsContent>
           </Tabs>
         </div>
