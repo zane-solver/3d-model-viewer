@@ -14,6 +14,7 @@ export interface ViewerSettings {
   autoRotate: boolean
   showGrid: boolean
   backgroundColor: string
+  autoRotateSpeed: number
   renderMode: RenderMode
   showAxes: boolean
   showBoundingBox: boolean

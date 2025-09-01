@@ -1,6 +1,6 @@
 import { Suspense, useRef, useEffect } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls, Grid, Center, Loader, Html, GizmoHelper, GizmoViewport } from '@react-three/drei'
+import { OrbitControls, Grid, Center, Html, GizmoHelper, GizmoViewport } from '@react-three/drei'
 import { useViewerStore } from '@/store/viewerStore'
 import { ModelLoader } from './ModelLoader'
 import { SceneLights } from './SceneLights'
@@ -115,7 +115,6 @@ export function Viewer3D() {
               <Center>
                 <ModelLoader
                   url={currentModel.url}
-                  wireframe={settings.wireframe}
                   autoRotate={settings.autoRotate}
                 />
               </Center>

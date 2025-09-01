@@ -2,13 +2,11 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import {
   Upload,
-  RotateCw,
   ZoomIn,
   ZoomOut,
   Maximize2,
   Grid3x3,
   Box,
-  Sun,
   Camera
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'

@@ -11,7 +11,7 @@ interface MaterialControllerProps {
 export function useMaterialController({ renderMode, wireframe }: MaterialControllerProps) {
   // Load matcap texture for matcap mode
   const matcapTexture = useTexture('/matcap.png', (texture) => {
-    texture.encoding = THREE.sRGBEncoding
+    texture.colorSpace = THREE.SRGBColorSpace
   })
 
   const material = useMemo(() => {

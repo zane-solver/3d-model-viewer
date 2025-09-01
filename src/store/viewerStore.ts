@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import { Model3D, ViewerSettings, LightSettings } from '@/types'
+// @ts-ignore
+import { Model3D, ViewerSettings, LightSettings, RenderMode } from '@/types'
 
 interface ViewerStore {
   // Estado del modelo

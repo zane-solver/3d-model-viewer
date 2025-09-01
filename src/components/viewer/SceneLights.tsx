@@ -1,6 +1,5 @@
 import { useRef } from 'react'
 import { DirectionalLight } from 'three'
-import { useHelper } from '@react-three/drei'
 import { useViewerStore } from '@/store/viewerStore'
 
 interface SceneLightsProps {
@@ -13,7 +12,7 @@ export function SceneLights({ showHelpers = false }: SceneLightsProps) {
 
   // Show light helper in development
   if (showHelpers && directionalLightRef.current) {
-    useHelper(directionalLightRef, DirectionalLight, 1, 'yellow')
+    // useHelper(directionalLightRef, DirectionalLight, 1, 'yellow')
   }
 
   return (

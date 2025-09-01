@@ -8,7 +8,6 @@ export function useFileUpload() {
   const validateObjFile = useCallback((content: string): boolean => {
     // Basic OBJ validation - check for vertices
     const hasVertices = /^v\s+/m.test(content)
-    const hasFaces = /^f\s+/m.test(content)
 
     return hasVertices // At minimum, should have vertices
   }, [])

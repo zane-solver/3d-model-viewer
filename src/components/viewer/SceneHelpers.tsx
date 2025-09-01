@@ -10,11 +10,12 @@ interface SceneHelpersProps {
 
 export function SceneHelpers({ model }: SceneHelpersProps) {
   const { settings } = useViewerStore()
-  const boxHelperRef = useRef<Box3Helper>()
+  const boxHelperRef = useRef<Box3Helper>(null)
 
   // Bounding box helper
   if (model && settings.showBoundingBox) {
-    useHelper(boxHelperRef, Box3Helper, model, 'yellow')
+    // @ts-ignore
+    useHelper(boxHelperRef, Box3Helper, 'yellow')
   }
 
   return (

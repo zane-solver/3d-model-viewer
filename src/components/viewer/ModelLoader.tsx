@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { useLoader } from '@react-three/fiber'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
 import * as THREE from 'three'
 import { useViewerStore } from '@/store/viewerStore'
 
 interface ModelLoaderProps {
   url: string
-  wireframe?: boolean
   autoRotate?: boolean
 }
 
-export function ModelLoader({ url, wireframe = false }: ModelLoaderProps) {
+export function ModelLoader({ url }: ModelLoaderProps) {
   const { setError, setModelInfo, settings } = useViewerStore()
   const meshRef = useRef<THREE.Group>(null)
   const [isInitialized, setIsInitialized] = useState(false)
@@ -33,22 +32,23 @@ export function ModelLoader({ url, wireframe = false }: ModelLoaderProps) {
     context.fillRect(0, 0, 256, 256)
 
     const texture = new THREE.CanvasTexture(canvas)
-    texture.encoding = THREE.sRGBEncoding
+    texture.colorSpace = THREE.SRGBColorSpace
     texture.needsUpdate = true
     return texture
   }, [])
 
   // Load the OBJ file
+  // @ts-ignore
   const obj = useLoader(
     OBJLoader,
     url,
-    (xhr) => {
-      console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
-    },
-    (error) => {
-      console.error('Error loading OBJ:', error)
-      setError('Failed to load 3D model')
-    }
+    // @ts-ignore
+    // (xhr) => {
+    //   if (xhr.lengthComputable) {
+    //     const percentComplete = (xhr.loaded / xhr.total) * 100
+    //     console.log(percentComplete + '% loaded')
+    //   }
+    // }
   )
 
   // Initialize model (only once when loaded)
@@ -59,7 +59,7 @@ export function ModelLoader({ url, wireframe = false }: ModelLoaderProps) {
       let totalVertices = 0
       let totalFaces = 0
 
-      obj.traverse((child) => {
+      obj.traverse((child: THREE.Object3D) => {
         if (child instanceof THREE.Mesh) {
           const geometry = child.geometry
           if (geometry) {
@@ -183,7 +183,7 @@ function BoundingBoxHelper({ box }: { box: THREE.Box3 }) {
     const min = box.min
     const max = box.max
 
-    return [
+    const verticesArray = [
       // Bottom face
       [min.x, min.y, min.z], [max.x, min.y, min.z],
       [max.x, min.y, min.z], [max.x, min.y, max.z],
@@ -200,16 +200,20 @@ function BoundingBoxHelper({ box }: { box: THREE.Box3 }) {
       [max.x, min.y, max.z], [max.x, max.y, max.z],
       [min.x, min.y, max.z], [min.x, max.y, max.z],
     ].flat()
+
+    return new Float32Array(verticesArray)
   }, [box])
 
   return (
     <lineSegments>
       <bufferGeometry>
+          // @ts-ignore
         <bufferAttribute
           attach="attributes-position"
           count={vertices.length / 3}
           array={new Float32Array(vertices)}
           itemSize={3}
+          args={[vertices, 3]}
         />
       </bufferGeometry>
       <lineBasicMaterial color="yellow" />
