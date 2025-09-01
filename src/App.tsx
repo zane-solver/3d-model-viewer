@@ -1,14 +1,11 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { MainLayout } from '@/components/layout/MainLayout'
-import { Toolbar } from '@/components/layout/Toolbar'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { FileUploadDialog } from '@/components/FileUploadDialog'
 import { ViewerContainer } from '@/components/viewer/ViewerContainer'
-import { useViewerStore } from '@/store/viewerStore'
 
 function App() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
-  const { updateSettings, settings } = useViewerStore()
 
   // Camera control functions
   const handleResetView = () => {
@@ -27,33 +24,24 @@ function App() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen()
     } else {
-      document.exitFullscreen()
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+      }
     }
-  }
-
-  const handleToggleGrid = () => {
-    updateSettings({ showGrid: !settings.showGrid })
-  }
-
-  const handleToggleWireframe = () => {
-    updateSettings({ wireframe: !settings.wireframe })
   }
 
   return (
     <>
       <MainLayout
-        toolbar={
-          <Toolbar
+        sidebar={
+          <Sidebar
             onFileUpload={() => setUploadDialogOpen(true)}
             onResetView={handleResetView}
             onZoomIn={handleZoomIn}
             onZoomOut={handleZoomOut}
             onToggleFullscreen={handleToggleFullscreen}
-            onToggleGrid={handleToggleGrid}
-            onToggleWireframe={handleToggleWireframe}
           />
         }
-        sidebar={<Sidebar />}
       >
         <ViewerContainer />
       </MainLayout>
