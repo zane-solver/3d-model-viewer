@@ -431,55 +431,44 @@ export function Sidebar({
                 </CardHeader>
                 <CardContent>
                   {currentModel ? (
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">
-                          Name:
-                        </span>
-                        <span
-                          className="text-sm font-medium truncate ml-2"
-                          title={currentModel.name}
-                        >
-                          {currentModel.name}
-                        </span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">
-                          Format:
-                        </span>
-                        <span className="text-sm font-medium">OBJ</span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">
-                          File Size:
-                        </span>
-                        <span className="text-sm font-medium">
-                          {(currentModel.file.size / 1024 / 1024).toFixed(2)}{' '}
-                          MB
-                        </span>
-                      </div>
+                    <div className="grid grid-cols-[auto,1fr] gap-x-2 gap-y-3 items-center text-sm">
+                      <span className="text-muted-foreground">Name:</span>
+                      <span
+                        className="font-medium truncate"
+                        title={currentModel.name}
+                      >
+                        {currentModel.name}
+                      </span>
+
+                      <Separator className="col-span-2" />
+
+                      <span className="text-muted-foreground">Format:</span>
+                      <span className="font-medium">OBJ</span>
+
+                      <Separator className="col-span-2" />
+
+                      <span className="text-muted-foreground">
+                        File Size:
+                      </span>
+                      <span className="font-medium">
+                        {(currentModel.file.size / 1024 / 1024).toFixed(2)} MB
+                      </span>
+
                       {modelInfo && (
                         <>
-                          <Separator />
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm text-muted-foreground">
-                              Vertices:
-                            </span>
-                            <span className="text-sm font-medium">
-                              {modelInfo.vertices.toLocaleString()}
-                            </span>
-                          </div>
-                          <Separator />
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm text-muted-foreground">
-                              Faces:
-                            </span>
-                            <span className="text-sm font-medium">
-                              {modelInfo.faces.toLocaleString()}
-                            </span>
-                          </div>
+                          <Separator className="col-span-2" />
+                          <span className="text-muted-foreground">
+                            Vertices:
+                          </span>
+                          <span className="font-medium">
+                            {modelInfo.vertices.toLocaleString()}
+                          </span>
+
+                          <Separator className="col-span-2" />
+                          <span className="text-muted-foreground">Faces:</span>
+                          <span className="font-medium">
+                            {modelInfo.faces.toLocaleString()}
+                          </span>
                         </>
                       )}
                     </div>
