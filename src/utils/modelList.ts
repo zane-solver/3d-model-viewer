@@ -72,5 +72,8 @@ export function getAvailableModels(): ModelAsset[] {
     })
   })
 
-  return models.sort((a, b) => a.name.localeCompare(b.name))
+  return models.sort((a, b) => {
+    // Natural sort for numeric filenames (1, 2, 3... instead of 1, 10, 11, 2...)
+    return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' })
+  })
 }

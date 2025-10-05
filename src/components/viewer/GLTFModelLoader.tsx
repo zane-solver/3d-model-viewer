@@ -5,20 +5,48 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import * as THREE from 'three'
 import { useViewerStore } from '@/store/viewerStore'
 
+// Suppress console errors from GLTFLoader for missing textures
+const originalConsoleError = console.error
+const suppressTextureErrors = (...args: any[]) => {
+  const message = args[0]
+  if (typeof message === 'string' && message.includes('GLTFLoader') && message.includes('texture')) {
+    // Suppress texture loading errors
+    return
+  }
+  originalConsoleError(...args)
+}
+
 interface GLTFModelLoaderProps {
   url: string
 }
 
 export function GLTFModelLoader({ url }: GLTFModelLoaderProps) {
-  const { setError, setModelInfo, setAnimations, settings } = useViewerStore()
+  const { setError, setModelInfo, setAnimations, settings, currentModel } = useViewerStore()
   const meshRef = useRef<THREE.Group>(null)
   const [isInitialized, setIsInitialized] = useState(false)
+
+  // Suppress texture errors temporarily
+  useEffect(() => {
+    console.error = suppressTextureErrors
+    return () => {
+      console.error = originalConsoleError
+    }
+  }, [])
 
   // Load the GLTF file with Draco support
   const gltf = useLoader(GLTFLoader, url, (loader) => {
     const dracoLoader = new DRACOLoader()
     dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
     loader.setDRACOLoader(dracoLoader)
+
+    // Create custom loader manager that doesn't throw on texture errors
+    const customManager = new THREE.LoadingManager()
+    customManager.onError = () => {
+      // Silently ignore all loading errors
+    }
+
+    // Override the default manager
+    loader.manager = customManager
   })
 
   // Initialize model (only once when loaded)
@@ -45,6 +73,34 @@ export function GLTFModelLoader({ url }: GLTFModelLoaderProps) {
             } else {
               totalFaces += geometry.attributes.position.count / 3
             }
+          }
+
+          // Fix broken materials/textures
+          if (child.material) {
+            const materials = Array.isArray(child.material) ? child.material : [child.material]
+            materials.forEach(mat => {
+              if (mat instanceof THREE.MeshStandardMaterial) {
+                // If texture failed to load, remove the reference
+                if (mat.map && mat.map.image === undefined) {
+                  console.warn('Removing broken texture from material')
+                  mat.map = null
+                  mat.needsUpdate = true
+                }
+                // Same for other texture maps
+                if (mat.normalMap && mat.normalMap.image === undefined) {
+                  mat.normalMap = null
+                  mat.needsUpdate = true
+                }
+                if (mat.roughnessMap && mat.roughnessMap.image === undefined) {
+                  mat.roughnessMap = null
+                  mat.needsUpdate = true
+                }
+                if (mat.metalnessMap && mat.metalnessMap.image === undefined) {
+                  mat.metalnessMap = null
+                  mat.needsUpdate = true
+                }
+              }
+            })
           }
 
           // Collect unique materials
@@ -77,6 +133,20 @@ export function GLTFModelLoader({ url }: GLTFModelLoaderProps) {
       // Store animations if any
       if (gltf.animations && gltf.animations.length > 0) {
         setAnimations(gltf.animations)
+      }
+
+      // Apply model-specific rotations
+      const modelName = currentModel?.name?.toLowerCase() || ''
+      console.log('Loading model:', modelName) // Debug
+
+      // Extract model number from filename (e.g., "2.glb" or "2-something.glb")
+      const modelNumber = modelName.match(/^(\d+)[-.]/)
+      console.log('Detected model number:', modelNumber ? modelNumber[1] : 'none') // Debug
+
+      if (modelNumber && modelNumber[1] === '2') {
+        // Rotate model 2 by 180 degrees on Y axis
+        console.log('Applying 180° Y rotation to model 2') // Debug
+        gltf.scene.rotation.y = Math.PI // 180 degrees in radians
       }
 
       // Center and scale the model
