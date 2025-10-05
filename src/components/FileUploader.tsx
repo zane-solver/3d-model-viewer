@@ -14,11 +14,11 @@ export function FileUploader({ onFileSelect, onCancel }: FileUploaderProps) {
   const [error, setError] = useState<string | null>(null)
   const [dragActive, setDragActive] = useState(false)
 
-  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
+  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: unknown[]) => {
     setError(null)
 
     if (rejectedFiles.length > 0) {
-      setError('Please upload a valid .obj file')
+      setError('Please upload a valid 3D model file (.obj, .gltf, .glb)')
       return
     }
 
@@ -40,7 +40,10 @@ export function FileUploader({ onFileSelect, onCancel }: FileUploaderProps) {
     accept: {
       'model/obj': ['.obj'],
       'application/object': ['.obj'],
-      'text/plain': ['.obj']
+      'text/plain': ['.obj'],
+      'model/gltf+json': ['.gltf'],
+      'model/gltf-binary': ['.glb'],
+      'application/octet-stream': ['.glb']
     },
     maxFiles: 1,
     onDragEnter: () => setDragActive(true),
@@ -79,7 +82,7 @@ export function FileUploader({ onFileSelect, onCancel }: FileUploaderProps) {
               <p className="text-sm font-medium">
                 {isDragActive
                   ? "Drop your file here"
-                  : "Drag & drop your OBJ file here"
+                  : "Drag & drop your 3D model here"
                 }
               </p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -88,7 +91,7 @@ export function FileUploader({ onFileSelect, onCancel }: FileUploaderProps) {
             </div>
 
             <p className="text-xs text-muted-foreground">
-              Supports: .obj files up to 100MB
+              Supports: .obj, .gltf, .glb (up to 100MB)
             </p>
           </div>
         </div>

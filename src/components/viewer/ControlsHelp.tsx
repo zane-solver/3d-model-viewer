@@ -3,7 +3,7 @@ import { HelpCircle } from 'lucide-react'
 
 export function ControlsHelp() {
   return (
-    <Card className="absolute top-4 right-4 w-64 bg-background/80 backdrop-blur-sm border-primary/20 shadow-lg">
+    <Card className="absolute bottom-4 left-4 lg:bottom-auto lg:top-4 lg:left-auto lg:right-4 w-64 bg-background/90 backdrop-blur-sm border-primary/20 shadow-lg">
       <CardContent className="p-4">
         <div className="flex items-center mb-3">
           <HelpCircle className="w-5 h-5 mr-2 text-primary" />

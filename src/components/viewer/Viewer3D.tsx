@@ -1,8 +1,8 @@
 import { Suspense, useRef, useEffect } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls, Grid, Center, Html, GizmoHelper, GizmoViewport } from '@react-three/drei'
+import { OrbitControls, Center, Html, GizmoHelper, GizmoViewport, Environment } from '@react-three/drei'
 import { useViewerStore } from '@/store/viewerStore'
-import { ModelLoader } from './ModelLoader'
+import { UniversalModelLoader } from './UniversalModelLoader'
 import { SceneLights } from './SceneLights'
 import { ErrorBoundary } from './ErrorBoundary'
 import * as THREE from 'three'
@@ -22,6 +22,7 @@ function LoadingFallback() {
 // Camera Controller component
 function CameraController() {
   const { camera } = useThree()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const controlsRef = useRef<any>(null)
   const { settings } = useViewerStore()
 
@@ -93,27 +94,16 @@ export function Viewer3D() {
           {/* Lights */}
           <SceneLights />
 
-          {/* Grid */}
-          {settings.showGrid && (
-            <Grid
-              args={[20, 20]}
-              cellSize={0.5}
-              cellThickness={0.5}
-              cellColor="#6b7280"
-              sectionSize={2}
-              sectionThickness={1}
-              sectionColor="#374151"
-              fadeDistance={30}
-              fadeStrength={1}
-              followCamera={false}
-            />
+          {/* Environment for PBR materials (GLTF) */}
+          {currentModel?.loaderType === 'gltf' && (
+            <Environment preset="studio" />
           )}
 
           {/* Model */}
           {currentModel && (
             <Suspense fallback={<LoadingFallback />}>
               <Center>
-                <ModelLoader
+                <UniversalModelLoader
                   url={currentModel.url}
                   autoRotate={settings.autoRotate}
                 />
@@ -122,14 +112,12 @@ export function Viewer3D() {
           )}
 
           {/* Axes Helper */}
-          {settings.showAxes && (
-            <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
-              <GizmoViewport
-                axisColors={['red', 'green', 'blue']}
-                labelColor="black"
-              />
-            </GizmoHelper>
-          )}
+          <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
+            <GizmoViewport
+              axisColors={['red', 'green', 'blue']}
+              labelColor="black"
+            />
+          </GizmoHelper>
 
           {/* Camera Controller */}
           <CameraController />

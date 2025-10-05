@@ -1,11 +1,12 @@
 # 3D Model Viewer
 
-This is a comprehensive 3D model viewer web application built with React, TypeScript, and Three.js. It allows users to upload and inspect `.obj` 3D models with various rendering options and controls.
+This is a comprehensive 3D model viewer web application built with React, TypeScript, and Three.js. It allows users to upload and inspect `.obj`, `.gltf`, and `.glb` 3D models with various rendering options and controls.
 
 ## 1. Features
 
-*   **3D Model Loading**: Upload and view `.obj` 3D models.
+*   **3D Model Loading**: Upload and view `.obj`, `.gltf`, and `.glb` 3D models.
 *   **Interactive 3D Viewer**: Orbit, pan, and zoom the camera to inspect the model from all angles.
+*   **GLTF/GLB Support**: Full support for GLTF/GLB files with PBR materials, preserving colors and materials from CAD software like SOLIDWORKS.
 *   **Multiple Rendering Modes**:
     *   **Solid**: Standard shaded material.
     *   **Wireframe**: Shows the model's geometry.
@@ -17,8 +18,13 @@ This is a comprehensive 3D model viewer web application built with React, TypeSc
     *   Toggle auto-rotation.
     *   Toggle bounding box visibility.
 *   **Lighting Controls**: Adjust ambient and directional light intensity and color.
-*   **File Dropzone**: Easy drag-and-drop file uploading.
-*   **Model Info**: View the number of vertices and faces in the loaded model.
+*   **File Dropzone**: Easy drag-and-drop file uploading for OBJ, GLTF, and GLB files.
+*   **Model Info Panel**: View detailed information including:
+    *   File format (OBJ, GLTF, GLB)
+    *   Number of meshes
+    *   Number of vertices and faces
+    *   Material count
+    *   Animation information (for GLTF files)
 *   **Error Handling**: Graceful error handling for failed model loading.
 *   **Responsive Layout**: The application is designed with a responsive layout that works on different screen sizes.
 
@@ -157,7 +163,52 @@ The 3D rendering is handled by `react-three-fiber`, which is a React renderer fo
 *   **Hook vs. Component Confusion**: The file `src/hooks/useMaterial.ts` was previously named `MaterialController.tsx` and was being incorrectly used as a component, which caused errors. The logic for applying materials is now handled directly inside `ModelLoader.tsx`. The `useMaterial.ts` hook is currently not used anywhere in the application. This suggests a point of refactoring that was not completed.
 *   **Centralized Controls**: All UI event handlers are defined in `App.tsx` and passed down as props to the `SidebarContent` component. This is a reasonable approach for a small application, but for a larger application, it might be better to have more co-location of state and the components that use it.
 
-## 8. How to Run the Project
+## 8. Supported File Formats
+
+### OBJ (.obj)
+- **Best for**: Simple geometry, individual parts
+- **Limitations**:
+  - Basic material support (requires .mtl file)
+  - No color preservation from CAD software
+  - No assembly hierarchy
+- **Use case**: Quick geometry visualization
+
+### GLTF/GLB (.gltf, .glb)
+- **Recommended for SOLIDWORKS exports**
+- **Advantages**:
+  - Preserves PBR materials and colors
+  - Maintains assembly hierarchy
+  - Supports multiple meshes
+  - Better performance for complex models
+  - Animation support
+- **Use case**: Full-featured CAD model visualization with colors and materials
+
+## 9. Exporting from SOLIDWORKS
+
+### Option 1: Direct GLTF Export (if available)
+1. In SOLIDWORKS, go to `File → Save As`
+2. Select `GLTF (*.gltf)` or `GLB (*.glb)` format
+3. Configure export options:
+   - ✓ Include materials
+   - ✓ Include colors
+4. Save and upload to the viewer
+
+### Option 2: Via Blender (Free)
+1. Export from SOLIDWORKS as `.obj` + `.mtl`
+2. Import into [Blender](https://www.blender.org/) (free)
+3. In Blender: `File → Export → glTF 2.0 (.glb)`
+4. Export settings:
+   - Format: `glTF Binary (.glb)`
+   - ✓ Include: Materials
+   - ✓ Compression
+5. Upload the `.glb` file to the viewer
+
+### Recommendations
+- **For assemblies**: Use GLB format for best results
+- **File size**: Keep under 100MB for optimal web performance
+- **Colors**: GLB preserves SOLIDWORKS part colors automatically
+
+## 10. How to Run the Project
 
 1.  **Clone the repository**:
     ```bash
@@ -172,3 +223,10 @@ The 3D rendering is handled by `react-three-fiber`, which is a React renderer fo
     npm run dev
     ```
 4.  Open your browser and navigate to `http://localhost:5173` (or the port specified in the output).
+
+## 11. Usage Tips
+
+- **Drag and drop**: Simply drag `.obj`, `.gltf`, or `.glb` files onto the upload area
+- **Model info**: Check the top-left panel for model statistics and format information
+- **Performance**: For large assemblies (100+ parts), GLB format typically performs better than OBJ
+- **Wireframe**: Use wireframe mode to inspect geometry structure regardless of file format

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Viewer3D } from './Viewer3D'
 import { useViewerStore } from '@/store/viewerStore'
 import { ControlsHelp } from './ControlsHelp'
+import { ModelInfo } from './ModelInfo'
 
 interface ViewerContainerProps {
   onReady?: () => void
@@ -32,6 +33,7 @@ export function ViewerContainer({ onReady }: ViewerContainerProps) {
   return (
     <div className="relative h-full w-full">
       <Viewer3D />
+      <ModelInfo />
       <ControlsHelp />
     </div>
   )

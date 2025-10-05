@@ -4,44 +4,46 @@ import { Sidebar } from '@/components/layout/Sidebar'
 import { FileUploadDialog } from '@/components/FileUploadDialog'
 import { ViewerContainer } from '@/components/viewer/ViewerContainer'
 import { useViewerStore } from './store/viewerStore'
-import defaultModelUrl from '@/assets/default.obj?url'
-
-// Use Vite's import.meta.glob to get all .obj files as URLs
-const modelUrls = import.meta.glob('@/assets/*.obj', { as: 'url', eager: true })
+import { getAvailableModels } from '@/utils/modelList'
 
 function App() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
   const { setCurrentModel } = useViewerStore()
 
   useEffect(() => {
-    const loadModelFromUrl = () => {
+    const loadInitialModel = () => {
       const params = new URLSearchParams(window.location.search)
       const modelName = params.get('model')
-      let modelUrl = defaultModelUrl
-      let name = 'default.obj'
+      const availableModels = getAvailableModels()
 
+      if (availableModels.length === 0) return
+
+      let modelToLoad = availableModels[0] // Default to first model
+
+      // If a specific model is requested via URL
       if (modelName) {
-        // The keys in modelUrls will be like '/src/assets/model.obj'
-        const modelKey = `/src/assets/${modelName}`
-
-        if (modelUrls[modelKey]) {
-          modelUrl = modelUrls[modelKey]
-          name = modelName
+        const foundModel = availableModels.find(m =>
+          m.fileName === modelName ||
+          m.fileName.startsWith(modelName)
+        )
+        if (foundModel) {
+          modelToLoad = foundModel
         } else {
-          console.warn(`Model not found: ${modelName}. Loading default model.`)
+          console.warn(`Model not found: ${modelName}. Loading first available model.`)
         }
       }
 
-      const model = {
-        id: name,
-        name: name,
-        url: modelUrl,
-        file: new File([], name),
-      }
-      setCurrentModel(model)
+      setCurrentModel({
+        id: Date.now().toString(),
+        name: modelToLoad.fileName,
+        url: modelToLoad.url,
+        file: new File([], modelToLoad.fileName),
+        fileType: modelToLoad.fileType,
+        loaderType: modelToLoad.fileType === 'obj' ? 'obj' : 'gltf'
+      })
     }
 
-    loadModelFromUrl()
+    loadInitialModel()
   }, [setCurrentModel])
 
   // Camera control functions

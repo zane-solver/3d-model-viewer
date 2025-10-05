@@ -1,23 +1,23 @@
 // src/types/index.ts
 //
 export type RenderMode = 'solid' | 'wireframe' | 'normal' | 'matcap' | 'depth'
+export type SupportedFileType = 'obj' | 'gltf' | 'glb'
+export type LoaderType = 'obj' | 'gltf'
 
 export interface Model3D {
   id: string
   name: string
   file: File
   url: string
+  fileType?: SupportedFileType
+  loaderType?: LoaderType
 }
 
 export interface ViewerSettings {
   wireframe: boolean
   autoRotate: boolean
-  showGrid: boolean
   backgroundColor: string
   autoRotateSpeed: number
-  renderMode: RenderMode
-  showAxes: boolean
-  showBoundingBox: boolean
 }
 
 export interface CameraSettings {

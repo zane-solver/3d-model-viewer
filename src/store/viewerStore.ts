@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import * as THREE from 'three'
 // @ts-ignore
 import { Model3D, ViewerSettings, LightSettings, RenderMode } from '@/types'
 
@@ -11,10 +12,6 @@ interface ViewerStore {
   settings: ViewerSettings
   updateSettings: (settings: Partial<ViewerSettings>) => void
 
-  // Configuración de luces
-  lightSettings: LightSettings
-  updateLightSettings: (settings: Partial<LightSettings>) => void
-
   // Estado de la UI
   isLoading: boolean
   setIsLoading: (loading: boolean) => void
@@ -26,15 +23,23 @@ interface ViewerStore {
   modelInfo: {
     vertices: number
     faces: number
+    meshCount?: number
+    materialCount?: number
   } | null
-  setModelInfo: (info: { vertices: number; faces: number } | null) => void
+  setModelInfo: (info: { vertices: number; faces: number; meshCount?: number; materialCount?: number } | null) => void
+
+  // Datos específicos de GLTF
+  animations: THREE.AnimationClip[]
+  setAnimations: (animations: THREE.AnimationClip[]) => void
+
+  mixer: THREE.AnimationMixer | null
+  setMixer: (mixer: THREE.AnimationMixer | null) => void
 }
 
 export interface ViewerSettings {
   wireframe: boolean
   autoRotate: boolean
-  autoRotateSpeed: number // Agregar esta línea
-  showGrid: boolean
+  autoRotateSpeed: number
   backgroundColor: string
 }
 
@@ -45,26 +50,13 @@ export const useViewerStore = create<ViewerStore>((set) => ({
     wireframe: false,
     autoRotate: false,
     autoRotateSpeed: 1,
-    showGrid: true,
-    backgroundColor: '#1a1a1a',
-    renderMode: 'solid' as RenderMode,
-    showAxes: false,
-    showBoundingBox: false,
-  },
-  lightSettings: {
-    ambient: {
-      intensity: 0.5,
-      color: '#ffffff'
-    },
-    directional: {
-      intensity: 1,
-      color: '#ffffff',
-      position: [5, 5, 5] as [number, number, number]
-    }
+    backgroundColor: '#0a1628',
   },
   isLoading: false,
   error: null,
   modelInfo: null,
+  animations: [],
+  mixer: null,
 
   // Actions
   setCurrentModel: (model) => set({ currentModel: model }),
@@ -72,15 +64,10 @@ export const useViewerStore = create<ViewerStore>((set) => ({
     set((state) => ({
       settings: { ...state.settings, ...newSettings }
     })),
-  updateLightSettings: (newSettings) =>
-    set((state) => ({
-      lightSettings: {
-        ambient: { ...state.lightSettings.ambient, ...newSettings.ambient },
-        directional: { ...state.lightSettings.directional, ...newSettings.directional }
-      }
-    })),
   setIsLoading: (loading) => set({ isLoading: loading }),
   setError: (error) => set({ error }),
   setModelInfo: (info) => set({ modelInfo: info }),
+  setAnimations: (animations) => set({ animations }),
+  setMixer: (mixer) => set({ mixer }),
 }))
 

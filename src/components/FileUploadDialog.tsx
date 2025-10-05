@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { FileUploader } from './FileUploader'
-import { useViewerStore } from '@/store/viewerStore'
+import { useFileUpload } from '@/hooks/useFileUpload'
 
 interface FileUploadDialogProps {
   open: boolean
@@ -14,31 +14,12 @@ interface FileUploadDialogProps {
 }
 
 export function FileUploadDialog({ open, onOpenChange }: FileUploadDialogProps) {
-  const { setCurrentModel, setIsLoading, setError } = useViewerStore()
+  const { processFile } = useFileUpload()
 
   const handleFileSelect = async (file: File) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      // Create object URL for the file
-      const url = URL.createObjectURL(file)
-
-      // Store the model
-      setCurrentModel({
-        id: Date.now().toString(),
-        name: file.name,
-        file,
-        url
-      })
-
-      // Close dialog
+    const success = await processFile(file)
+    if (success) {
       onOpenChange(false)
-    } catch (error) {
-      setError('Failed to load model')
-      console.error('Error loading model:', error)
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -48,7 +29,7 @@ export function FileUploadDialog({ open, onOpenChange }: FileUploadDialogProps) 
         <DialogHeader>
           <DialogTitle>Load 3D Model</DialogTitle>
           <DialogDescription>
-            Upload an OBJ file to view it in 3D
+            Upload a 3D model file (.obj, .gltf, .glb) to view it in 3D
           </DialogDescription>
         </DialogHeader>
 
