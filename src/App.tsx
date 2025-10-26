@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { FileUploadDialog } from '@/components/FileUploadDialog'
+import { AboutDialog } from '@/components/AboutDialog'
 import { ViewerContainer } from '@/components/viewer/ViewerContainer'
 import { useViewerStore } from './store/viewerStore'
 import { getAvailableModels } from '@/utils/modelList'
 
 function App() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
+  const [aboutDialogOpen, setAboutDialogOpen] = useState(false)
   const { setCurrentModel } = useViewerStore()
 
   useEffect(() => {
@@ -69,6 +71,10 @@ function App() {
     }
   }
 
+  const handleAboutClick = () => {
+    setAboutDialogOpen(true)
+  }
+
   return (
     <>
       <MainLayout
@@ -79,6 +85,7 @@ function App() {
             onZoomIn={handleZoomIn}
             onZoomOut={handleZoomOut}
             onToggleFullscreen={handleToggleFullscreen}
+            onAboutClick={handleAboutClick}
           />
         }
       >
@@ -88,6 +95,11 @@ function App() {
       <FileUploadDialog
         open={uploadDialogOpen}
         onOpenChange={setUploadDialogOpen}
+      />
+
+      <AboutDialog
+        open={aboutDialogOpen}
+        onOpenChange={setAboutDialogOpen}
       />
     </>
   )

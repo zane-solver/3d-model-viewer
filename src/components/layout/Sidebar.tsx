@@ -24,6 +24,7 @@ import {
   ZoomOut,
   Maximize2,
   Box,
+  Info,
 } from 'lucide-react'
 import {
   Tooltip,
@@ -38,6 +39,7 @@ interface SidebarProps {
   onZoomIn: () => void
   onZoomOut: () => void
   onToggleFullscreen: () => void
+  onAboutClick: () => void
 }
 
 export function Sidebar({
@@ -46,6 +48,7 @@ export function Sidebar({
   onZoomIn,
   onZoomOut,
   onToggleFullscreen,
+  onAboutClick,
 }: SidebarProps) {
   const {
     settings,
@@ -60,7 +63,14 @@ export function Sidebar({
       <div className="flex h-16 items-center px-4 border-b bg-card/30">
         <Box className="h-6 w-6 text-primary mr-3 flex-shrink-0" />
         <div className="flex flex-col leading-tight">
-          <span className="text-xs font-semibold text-muted-foreground">JV Dev Solutions</span>
+          <a
+            href="https://jvdevsolutions.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-semibold text-muted-foreground hover:underline"
+          >
+            JV Dev Solutions
+          </a>
           <span className="text-base font-bold text-foreground">3D Viewer</span>
         </div>
       </div>
@@ -115,7 +125,7 @@ export function Sidebar({
 
       {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="p-6">
+        <div className="p-4">
           <Tabs defaultValue="models" className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-6">
               <TabsTrigger value="models">Models</TabsTrigger>
@@ -155,11 +165,10 @@ export function Sidebar({
                     ].map(({ color, name }) => (
                       <button
                         key={color}
-                        className={`h-10 w-full rounded border-2 transition-all hover:scale-105 hover:border-primary/50 ${
-                          settings.backgroundColor === color
-                            ? 'border-primary shadow-lg shadow-primary/20'
-                            : 'border-border'
-                        }`}
+                        className={`h-10 w-full rounded border-2 transition-all hover:scale-105 hover:border-primary/50 ${settings.backgroundColor === color
+                          ? 'border-primary shadow-lg shadow-primary/20'
+                          : 'border-border'
+                          }`}
                         style={{ backgroundColor: color }}
                         onClick={() =>
                           updateSettings({ backgroundColor: color })
@@ -239,11 +248,23 @@ export function Sidebar({
                 </CardContent>
               </Card>
 
-              
+
             </TabsContent>
           </Tabs>
         </div>
       </ScrollArea>
+
+      {/* Footer */}
+      <div className="p-4 border-t bg-card/20">
+        <Button
+          variant="outline"
+          className="w-full justify-start"
+          onClick={onAboutClick}
+        >
+          <Info className="h-4 w-4 mr-2" />
+          About
+        </Button>
+      </div>
     </div>
   )
 }

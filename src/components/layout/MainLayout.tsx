@@ -18,7 +18,7 @@ export function MainLayout({ children, sidebar }: MainLayoutProps) {
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-96 flex-shrink-0 border-r bg-card/50 backdrop-blur-sm">
+      <aside className="hidden lg:flex border flex-shrink-0 border-r bg-card/50 backdrop-blur-sm">
         {sidebar}
       </aside>
 
