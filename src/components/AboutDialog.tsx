@@ -119,52 +119,10 @@ export function AboutDialog({ open, onOpenChange }: AboutDialogProps) {
 
           <Separator />
 
-          {/* Developer Info */}
-          <div>
-            <h3 className="font-semibold text-sm text-foreground mb-3 text-center">
-              Developed by
-            </h3>
-            <div className="flex items-center gap-4 p-4 rounded-lg bg-card/50 border border-border/50">
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <Code2 className="h-6 w-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-foreground">
-                  JV Dev Solutions
-                </h4>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Web development and 3D applications solutions
-                </p>
-              </div>
-            </div>
-
-            {/* Links */}
-            <div className="flex flex-wrap gap-2 mt-3">
-              <a
-                href="https://jvdevsolutions.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-sm font-medium transition-colors"
-              >
-                <Globe className="h-4 w-4" />
-                Website
-              </a>
-              <a
-                href="https://github.com/jaimevillegas"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted hover:bg-muted/80 text-muted-foreground text-sm font-medium transition-colors"
-              >
-                <Github className="h-4 w-4" />
-                GitHub
-              </a>
-            </div>
-          </div>
-
           {/* Footer */}
           <div className="pt-2 text-center">
             <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} JV Dev Solutions. All rights
+              © {new Date().getFullYear()} Sil Bos. All rights
               reserved.
             </p>
           </div>
