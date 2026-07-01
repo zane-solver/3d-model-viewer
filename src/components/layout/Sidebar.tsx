@@ -69,7 +69,7 @@ export function Sidebar({
             rel="noopener noreferrer"
             className="text-xs font-semibold text-muted-foreground hover:underline"
           >
-            JV Dev Solutions
+            Sil Bos
           </a>
           <span className="text-base font-bold text-foreground">3D Viewer</span>
         </div>
