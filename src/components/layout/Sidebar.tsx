@@ -64,7 +64,7 @@ export function Sidebar({
         <Box className="h-6 w-6 text-primary mr-3 flex-shrink-0" />
         <div className="flex flex-col leading-tight">
           <a
-            href="https://jvdevsolutions.com"
+            href="#"
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs font-semibold text-muted-foreground hover:underline"
